@@ -1,28 +1,33 @@
 from flask import Flask
 from datetime import datetime
-from os import getenv
+from dotenv import load_dotenv
 
+load_dotenv()
 
 app=Flask(__name__)
 
 @app.get("/")
 def home():
-    return {'data':'Hello Flask'}
+    return {'data':'Hello Flask!'}
 
 
-@app.get('/date')
+@app.get('/current_datetime')
 def date():
-    morning=getenv('morning')
-    afternoon=getenv('afternoon')
+
     message=''
     date=datetime.now()
-    date_complete=date.strftime('%d/%m/%Y %H:%M:%S')
-    date_time=date.strftime('%p')
-    if date_time=='PM':
-        message=afternoon
+
+    date_complete=date.strftime('%d/%m/%Y %I:%M:%S %p')
+    date_hour=int(date.strftime('%H'))
+
+
+    if date_hour < 12:
+        message='Bom dia!'
+    elif date_hour< 18: 
+        message='Boa tarde!'
     else:
-        message=morning
-        return message    
-    return {'current_datetime':f'{date_complete} {date_time}',
+        message='Boa noite!'  
+
+    return {'current_datetime':f'{date_complete}',
             'message':message
             }
